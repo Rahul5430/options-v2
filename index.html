@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en" ng-app="optionsApp" class="ng-scope">
+<head>
+  <meta charset="utf-8">
+  <title>Options</title>
+  <!-- <base href="/"> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.6/ui-bootstrap-tpls.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/angular-chart.js@1.1.1/dist/angular-chart.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="js/app.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    @font-face {
+      font-family: 'Glyphicons Halflings';
+      src: url('//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/fonts/glyphicons-halflings-regular.eot');
+      src: url('//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+           url('//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/fonts/glyphicons-halflings-regular.woff2') format('woff2'),
+           url('//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/fonts/glyphicons-halflings-regular.woff') format('woff'),
+           url('//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+           url('//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+    }
+    .glyphicon {
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      font: normal normal 16px/1 'Glyphicons Halflings';
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      margin-right: 4px;
+    }
+    /* Add icons you will be using below */
+    .glyphicon-plus:before {
+      content: '\2b';
+    }
+    .glyphicon-remove:before {
+      content: '\e014';
+    }
+  </style>
+  <script>
+    $(document).ready(function() {
+      fetch('http://127.0.0.1:5002/nsedata/nifty%2050')
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+        var spotPrice = data["lastPrice"]
+        console.log(spotPrice);
+        $("#spotPrice").text(spotPrice);
+        $(".spotPrice").val(spotPrice);
+      })
+    });
+  </script>
+</head>
+<body ng-controller="MainCtrl" class="ng-scope">
+    <!-- <nav class="navbar navbar-default"> -->
+      <div class="navbar">
+        <!-- <div class="navbar-header"> -->
+          <h4>Strategy Builder</h4>
+        <!-- </div> -->
+      </div>
+    <!-- </nav> -->
+    <!-- <div class="container"> -->
+      <div class="jumbotron" ng-hide="setups.length">
+        <p>This is a tool to calculate your open option positions in any trading market. You can add as many setups as you wish. Each setup will consist of one or more trades in a particular stock or index. All data you enter will be automatically saved on your local machine and NO information is sent to any remote servers.</p>
+      </div>
+      <div class="setup form-group" ng-repeat="setup in setups track by $index">
+        <div class="func">
+          <div>
+            <label>
+              Index / Stock <input type="text" ng-model="setup.name" class="form-control" placeholder="ex. NIFTY">
+            </label>
+          </div>
+          <!-- <div>
+            <label>
+              Date <input type="date" class="form-control" name="date">
+            </label>
+          </div> -->
+          <div>
+            <label>
+              Select Segment
+              <!-- <input type="text" value="Options" id="segment" class="form-control" name="segment" list="select-segment" onchange="run()"> -->
+              <select class="form-control" id="select-segment" value="Options" onchange="run()">
+                <option value="Futures">Futures</option>
+                <option value="Options" selected="selected">Options</option>
+              </select>
+            </label>
+          </div>
+          <div>
+            <label>
+              Select Expiry <input type="date" class="form-control">
+            </label>
+          </div>
+          <div>
+            <label>
+              Spot price <input type="text" ng-model="setup.spotPrice" class="form-control spotPrice">
+            </label>
+          </div>
+          <!-- <div>
+            <label>Strike price</label>
+            <input type="text" ng-model="trade.strike" class="form-control">
+          </div>
+          <div>
+            <label uib-tooltip="Price of 1 unit of option">Premium</label>
+            <input type="text" ng-model="trade.premium" class="form-control">
+          </div>
+          <div>
+            <label>Qty</label>
+            <input type="text" ng-model="trade.qty" class="form-control">
+          </div> -->
+          <div style="grid-column: 1/5;">
+            <div ng-repeat="trade in setup.trades  track by $index">
+              <div class="row">
+                <div class="col-md-4">
+                <!-- <div class="col-md-4 option-type"> -->
+                  <div class="btn-group">
+                    <label class="btn btn-info" ng-model="trade.tradeType" uib-btn-radio="'buy'">Buy</label>
+                    <label class="btn btn-info" ng-model="trade.tradeType" uib-btn-radio="'sell'">Sell</label>
+                  </div>
+              <!-- </div>
+              <div class="row"> -->
+                  <div class="btn-group callput">
+                    <label class="btn btn-warning" ng-model="trade.optionType" uib-btn-radio="'call'">Call</label>
+                    <label class="btn btn-warning" ng-model="trade.optionType" uib-btn-radio="'put'">Put</label>
+                  </div>
+                <!-- </div> -->
+                </div>
+
+              <!-- <div class="col-md-8"> -->
+                <div class="col-md-8">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <label>Strike price</label>
+                      <input type="text" ng-model="trade.strike" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                      <label uib-tooltip="Price of 1 unit of option">Premium</label>
+                      <input type="text" ng-model="trade.premium" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                      <label>Qty</label>
+                      <input type="text" ng-model="trade.qty" class="form-control">
+                    </div>
+                    <div class="col-md-3 delete-trade" style="padding-top: 24px;">
+                      <button type="button" class="btn btn-danger btn-sm" uib-tooltip="Remove trade" ng-click="removeTrade(setup, trade)"><span class="glyphicon glyphicon-remove"></span></button>
+                    </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="add-trade-btn-wrapper">
+            <button class="btn btn-default" ng-click="addTrade(setup)"><span class="glyphicon glyphicon-plus"></span> Add Trade</button>
+          </div>
+        </div>
+        <div class="result">
+          <div class="row">
+            <div class="col-md-6 net-profit">Profit & Loss: <strong class="{{getProfitClass(setup)}}">{{setup.profit}}</strong></div>
+            <div class="col-md-6 delete-setup"><button class="btn btn-danger" ng-click="deleteSetup(setup)">Delete Setup</button></div>
+          </div>
+        </div>
+        <div class="graph">
+          <div class="container">
+            <div class="chart-wrapper" ng-if="setup.spotPrice > 0">
+              <canvas class="chart chart-line" chart-data="chart.data[setup.id].profits" chart-labels="chart.data[setup.id].labels" chart-series="chart.series" chart-options="chart.options"></canvas>
+            </div>
+          </div>
+          <div class="geeks">
+            <div>
+                <label>SPOT PRICE : </label>
+                <label id="spotPrice"></label>
+            </div>
+            <div>
+                <label>FUTURES PRICE</label>
+            </div>
+            <div>
+                <label>LOT SIZE</label>
+            </div>
+            <div>
+                <label>IV</label>
+            </div>
+            <div>
+                <label>IV PERCENTILE</label>
+            </div>
+            <div>
+                <label>NIFTY IV CHART</label>
+            </div>
+          </div>
+        </div>
+        <div class="data">
+          <div>
+            <div>
+                <label>
+                    Prob. of Profit
+                </label>
+            </div>
+            <div class="net-profit">
+                Max. Profit
+            </div>
+            <div>
+                <label>Max. RR Ratio</label>
+            </div>
+            <div>
+                <label>Max. Loss</label>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label>
+                    Breakevens
+                </label>
+            </div>
+            <div>
+                <label>
+                    Total PNL
+                </label>
+            </div>
+            <div>
+                <label>
+                    Net Credit
+                </label>
+            </div>
+            <div>
+                <label>
+                    Estimated Margin/Premium
+                </label>
+            </div>
+        </div>
+        <div>
+            <div>Alpha</div>
+            <div>Beta</div>
+            <div>Theta</div>
+            <div>Gamma</div>
+        </div>
+        </div>
+      </div>
+      <div class="button-group text-center">
+        <button class="btn btn-primary" ng-click="addSetup()"><span class="glyphicon glyphicon-plus"></span> Add New Setup</button>
+      </div>
+      <footer>
+        <div class="container">
+            <div class="text-center">Copyright © 2021. All rights reserved.</div>
+        </div>
+      </footer>
+    <!-- </div> -->
+  <script>
+    // $(document).ready(function() {
+    //   var x = $("#select-segment").value;
+    //   console.log(x);
+    // })
+    console.log("Spot Price =",spotPrice);
+    function run() {
+      var x = document.getElementById("select-segment");
+      var y = document.getElementsByClassName("callput");
+      console.log(x.value);
+      for (var i=0; i<y.length; i++) {
+        if (x.value == "Futures") {
+          y[i].style.display = "none";
+          // document.querySelectorAll('[id=callput]').style.display = "none";
+        } else {
+          // document.querySelectorAll('[id=callput]').style.display = "inline-block";
+          y[i].style.display = "inline-block";
+        }
+      }
+    }
+  </script>
+</body>
+</html>
