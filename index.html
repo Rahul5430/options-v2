@@ -11,6 +11,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/angular-chart.js@1.1.1/dist/angular-chart.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="js/app.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <style>
@@ -51,7 +52,7 @@
         var spotPrice = data["lastPrice"]
         console.log(spotPrice);
         $("#spotPrice").text(spotPrice);
-        $(".spotPrice").val(spotPrice);
+        // $(".spotPrice").val(spotPrice);
       })
     });
   </script>
