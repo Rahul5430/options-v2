@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
 from nsetools import Nse
+from nsepython import *
 from flask_cors import CORS, cross_origin
 # from pprint import pprint
 
@@ -19,7 +20,13 @@ class NseData(Resource):
     def get(self, quote):
         return nse.get_index_quote(quote)
 
+class OptionChain(Resource):
+    def get(self, id):
+        oi_data, ltp, crontime = oi_chain_builder(id.upper())
+        return oi_data.to_dict()
+
 api.add_resource(NseData, '/nsedata/<quote>')
+api.add_resource(OptionChain, '/option-chain/<id>')
 
 
 # pprint(nse.get_index_quote("nifty 50"))

@@ -136,7 +136,9 @@
                   <div class="row">
                     <div class="col-md-3">
                       <label>Strike price</label>
-                      <input type="text" ng-model="trade.strike" class="form-control">
+                      <!-- <input type="text" ng-model="trade.strike" class="form-control"> -->
+                      <select type="text" ng-model="trade.strike" class="form-control" ng-options="x for x in strike_price">
+                      </select>
                     </div>
                     <div class="col-md-3">
                       <label uib-tooltip="Price of 1 unit of option">Premium</label>

@@ -43,9 +43,34 @@ spa.then(function(result) {
 console.log(spa1);
 console.log(spa);
 
+jQuery.extend({
+	getStrikePrice: function() {
+		var result = null;
+		$.ajax({
+			url: 'http://127.0.0.1:5002/option-chain/nifty',
+			type: 'GET',
+			dataType: 'JSON',
+			// data: JSON.stringify({dataId: "xxx"}),
+			// contentType: 'application/json',
+			async: false,
+			success: function(data) {
+				result = data;
+			}
+			// error: function(ex) {
+				// 	alert(ex.responseText);
+			// }
+		});
+		return result;
+	}
+});
+var data = $.getStrikePrice();
+var strikeprice = data["Strike Price"];
+console.log(strikeprice);
+
 var app = angular.module("optionsApp", ['ui.bootstrap', 'chart.js']);
 
 app.controller('MainCtrl', ["$scope", "DataService", "UtilService", function ($scope, DataService, UtilService) {
+	$scope.strike_price = strikeprice;
 	$scope.setups = DataService.getAllSetups();
 	$scope.chart = {
 		data: {},
