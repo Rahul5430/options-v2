@@ -31,4 +31,5 @@ api.add_resource(OptionChain, '/option-chain/<id>')
 
 # pprint(nse.get_index_quote("nifty 50"))
 if __name__ == "__main__":
-    app.run(port=5002)
+    # app.run(port=5002)
+    app.run()
