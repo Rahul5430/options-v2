@@ -98,21 +98,9 @@
           </div>
           <div>
             <label>
-              Spot price <input type="text" ng-model="setup.spotPrice" class="form-control spotPrice">
+              Spot price <select type="text" ng-model="setup.spotPrice" class="form-control spotPrice" ng-options="x for x in spot_price"></select>
             </label>
           </div>
-          <!-- <div>
-            <label>Strike price</label>
-            <input type="text" ng-model="trade.strike" class="form-control">
-          </div>
-          <div>
-            <label uib-tooltip="Price of 1 unit of option">Premium</label>
-            <input type="text" ng-model="trade.premium" class="form-control">
-          </div>
-          <div>
-            <label>Qty</label>
-            <input type="text" ng-model="trade.qty" class="form-control">
-          </div> -->
           <div style="grid-column: 1/5;">
             <div ng-repeat="trade in setup.trades  track by $index">
               <div class="row">

@@ -26,22 +26,41 @@ axios.get('http://127.0.0.1:5002/nsedata/nifty%2050')
 	})
 	.catch(error => console.error(error));
 
-function getSpotPrice() {
-	return axios.get('http://127.0.0.1:5002/nsedata/nifty%2050')
-				.then(response => {
-					this.response = response.data
-					return this.response.lastPrice
-				})
-}
-var spa1;
-spa = getSpotPrice()
-console.log(getSpotPrice());
-spa.then(function(result) {
-	console.log(result);
-	spa1 = result;
-})
-console.log(spa1);
-console.log(spa);
+// function getSpotPrice() {
+// 	return axios.get('http://127.0.0.1:5002/nsedata/nifty%2050')
+// 				.then(response => {
+// 					this.response = response.data
+// 					return this.response.lastPrice
+// 				})
+// }
+// var spa1;
+// spa = getSpotPrice()
+// console.log(getSpotPrice());
+// spa.then(function(result) {
+// 	console.log(result);
+// 	spa1 = result;
+// })
+// console.log(spa1);
+// console.log(spa);
+
+jQuery.extend({
+	getSpotPrice: function() {
+		var result = null;
+		$.ajax({
+			url: 'http://127.0.0.1:5002/nsedata/nifty%2050',
+			type: 'GET',
+			dataType: 'JSON',
+			async: false,
+			success: function(data) {
+				result = data;
+			}
+		});
+		return result;
+	}
+});
+var data1 = $.getSpotPrice();
+var spotprice = data1["lastPrice"];
+console.log(spotprice);
 
 jQuery.extend({
 	getStrikePrice: function() {
@@ -63,14 +82,15 @@ jQuery.extend({
 		return result;
 	}
 });
-var data = $.getStrikePrice();
-var strikeprice = data["Strike Price"];
+var data2 = $.getStrikePrice();
+var strikeprice = data2["Strike Price"];
 console.log(strikeprice);
 
 var app = angular.module("optionsApp", ['ui.bootstrap', 'chart.js']);
 
 app.controller('MainCtrl', ["$scope", "DataService", "UtilService", function ($scope, DataService, UtilService) {
 	$scope.strike_price = strikeprice;
+	$scope.spot_price = [spotprice];
 	$scope.setups = DataService.getAllSetups();
 	$scope.chart = {
 		data: {},
